@@ -1,0 +1,102 @@
+# Copyright (c) 0x5BFA. All rights reserved.
+# Licensed under the MIT license.
+
+name: WindowsTerminalControl CI
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/assets/**'
+      - 'docs/**'
+      - '*.md'
+  pull_request:
+    paths-ignore:
+      - '.github/assets/**'
+      - 'docs/**'
+      - '*.md'
+
+run-name: ${{ github.event_name == 'pull_request' && 'WindowsTerminalControl PR Validation' || 'WindowsTerminalControl CI Validation' }}
+
+env:
+  WORKING_DIR:          '${{ github.workspace }}'
+  WINFORMS_SAMPLE_PATH: '${{ github.workspace }}\samples\WindowsTerminalControl.WinForms.Sample\WindowsTerminalControl.WinForms.Sample.csproj'
+  WPF_SAMPLE_PATH:      '${{ github.workspace }}\samples\WindowsTerminalControl.Wpf.Sample\WindowsTerminalControl.Wpf.Sample.csproj'
+  WINUI_SAMPLE_PATH:    '${{ github.workspace }}\samples\WindowsTerminalControl.WinUI.Sample\WindowsTerminalControl.WinUI.Sample.csproj'
+
+jobs:
+  build-winforms:
+    runs-on: windows-2025-vs2026
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+      PLATFORM: x64
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v6
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v3
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build the WinForms sample
+        run: msbuild /restore $env:WINFORMS_SAMPLE_PATH /p:Configuration=$env:CONFIGURATION /p:Platform=$env:PLATFORM
+
+  build-wpf:
+    runs-on: windows-2025-vs2026
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+      PLATFORM: x64
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v6
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v3
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build the WPF sample
+        run: msbuild /restore $env:WPF_SAMPLE_PATH /p:Configuration=$env:CONFIGURATION /p:Platform=$env:PLATFORM
+
+  build-winui:
+    runs-on: windows-2025-vs2026
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+    env:
+      CONFIGURATION: ${{ matrix.configuration }}
+      PLATFORM: x64
+
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v6
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v3
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build the WinUI sample
+        run: msbuild /restore $env:WINUI_SAMPLE_PATH /p:Configuration=$env:CONFIGURATION /p:Platform=$env:PLATFORM /p:AppxBundle=Never

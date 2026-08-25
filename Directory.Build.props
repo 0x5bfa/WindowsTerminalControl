@@ -1,0 +1,26 @@
+<Project>
+  <PropertyGroup>
+    <Authors>0x5bfa</Authors>
+    <Company>0x5bfa</Company>
+    <Version>1.0.0</Version>
+    <WindowsAppSDKVersion>2.4.0</WindowsAppSDKVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/0x5bfa/WindowsTerminalControl</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/0x5bfa/WindowsTerminalControl.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>terminal;windows-terminal;conpty;winforms;wpf;winui</PackageTags>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts\packages</PackageOutputPath>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)NOTICE.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

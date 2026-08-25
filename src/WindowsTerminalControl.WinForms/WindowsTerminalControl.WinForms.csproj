@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>WindowsTerminalControl.WinForms</RootNamespace>
+    <AssemblyName>WindowsTerminalControl.WinForms</AssemblyName>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>x64</Platforms>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IsPackable>true</IsPackable>
+    <PackageId>WindowsTerminalControl.WinForms</PackageId>
+    <Description>A WinForms host for the native Windows Terminal renderer.</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CI.Microsoft.Terminal.Wpf" Version="1.25.260303002" GeneratePathProperty="true" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WindowsTerminalControl.Core\WindowsTerminalControl.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="$(PkgCI_Microsoft_Terminal_Wpf)\runtimes\win-x64\native\Microsoft.Terminal.Control.dll">
+      <Link>Microsoft.Terminal.Control.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <Pack>true</Pack>
+      <PackagePath>runtimes\win-x64\native</PackagePath>
+    </Content>
+  </ItemGroup>
+
+</Project>

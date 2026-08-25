@@ -1,0 +1,19 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/WindowsTerminalControl.Core/WindowsTerminalControl.Core.csproj" />
+    <Project Path="src/WindowsTerminalControl.WinForms/WindowsTerminalControl.WinForms.csproj" />
+    <Project Path="src/WindowsTerminalControl.Wpf/WindowsTerminalControl.Wpf.csproj" />
+    <Project Path="src/WindowsTerminalControl.WinUI/WindowsTerminalControl.WinUI.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/WindowsTerminalControl.WinForms.Sample/WindowsTerminalControl.WinForms.Sample.csproj" />
+    <Project Path="samples/WindowsTerminalControl.Wpf.Sample/WindowsTerminalControl.Wpf.Sample.csproj" />
+    <Project Path="samples/WindowsTerminalControl.WinUI.Sample/WindowsTerminalControl.WinUI.Sample.csproj">
+      <Platform Solution="*|x64" Project="x64" />
+      <Deploy Solution="Debug|x64" />
+    </Project>
+  </Folder>
+</Solution>

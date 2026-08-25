@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+    xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+    xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+    xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+    xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+    IgnorableNamespaces="mp rescap uap">
+
+  <Identity
+      Name="WindowsTerminalControl.WinUI.Sample"
+      Publisher="CN=0x5bfa"
+      Version="1.0.0.0" />
+
+  <Properties>
+    <DisplayName>Windows Terminal Control Sample</DisplayName>
+    <PublisherDisplayName>0x5bfa</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-US" />
+  </Resources>
+
+  <Applications>
+    <Application
+        Id="App"
+        Executable="$targetnametoken$.exe"
+        EntryPoint="$targetentrypoint$">
+      <uap:VisualElements
+          DisplayName="Windows Terminal Control Sample"
+          Description="Windows Terminal control hosting sample"
+          Square150x150Logo="Assets\Square150x150Logo.png"
+          Square44x44Logo="Assets\Square44x44Logo.png"
+          BackgroundColor="transparent">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+
+</Package>

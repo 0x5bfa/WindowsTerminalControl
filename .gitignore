@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+*.user
+.vs/
+**/AppPackages/
+**/BundleArtifacts/
+artifacts/
+*.appx
+*.appxbundle
+*.appxupload
+*.cer
+*.msix
+*.msixbundle

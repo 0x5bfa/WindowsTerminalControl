@@ -1,38 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
-    <RootNamespace>WindowsTerminalControl.WinUI</RootNamespace>
-    <AssemblyName>WindowsTerminalControl.WinUI</AssemblyName>
-    <Nullable>enable</Nullable>
+
     <UseWinUI>true</UseWinUI>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>x64;arm64</Platforms>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <CsWin32RunAsBuildTask>true</CsWin32RunAsBuildTask>
-    <CsWinRTIncludes>Microsoft.UI.Content.ContentExternalOutputLink;Microsoft.UI.Content.IContentExternalOutputLink</CsWinRTIncludes>
-    <ContentExternalOutputLinkMetadataVersion>2.1.4-experimental</ContentExternalOutputLinkMetadataVersion>
-    <PlatformTarget>x64</PlatformTarget>
-    <Platforms>x64</Platforms>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+
     <IsPackable>true</IsPackable>
     <PackageId>WindowsTerminalControl.WinUI</PackageId>
     <Description>A WinUI 3 host for the native Windows Terminal renderer with composition and child-HWND modes.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CI.Microsoft.Terminal.WinUI3.Unofficial" Version="1.0.20-beta.1" ExcludeAssets="build;buildTransitive;contentFiles" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.1" />
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.321" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WindowsAppSDKVersion)" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2270" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.1-experimental" />
     <PackageReference Include="WinUIEx" Version="2.5.1" />
-    <PackageDownload Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="[$(ContentExternalOutputLinkMetadataVersion)]" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <CsWinRTInputs Include="$(NuGetPackageRoot)microsoft.windowsappsdk.interactiveexperiences\$(ContentExternalOutputLinkMetadataVersion)\metadata\10.0.18362.0\Microsoft.UI.winmd" />
   </ItemGroup>
 
   <ItemGroup>

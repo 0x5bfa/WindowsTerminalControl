@@ -24,7 +24,7 @@ public sealed partial class MainWindow : Window
         var commandArguments = Environment.GetCommandLineArgs().Skip(1).ToList();
         var useLegacyHost = commandArguments.Remove("--legacy-host");
         commandArguments.Remove("--composition-host");
-        _commandLine = commandArguments.Count == 0 ? "pwsh.exe -NoLogo" : string.Join(' ', commandArguments);
+        _commandLine = commandArguments.Count == 0 ? "C:\\WIndows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" : string.Join(' ', commandArguments);
         _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
         HostModePicker.SelectedIndex = useLegacyHost ? 1 : 0;
@@ -84,7 +84,7 @@ public sealed partial class MainWindow : Window
 
     private void StartCompositionHost()
     {
-        Title = "Windows Terminal control — WinUI 3";
+        Title = "Windows Terminal control (WinUI 3)";
         _terminalControl = new TerminalControl(TerminalHostMode.Composition)
         {
             WindowOriginProvider = () => new Windows.Foundation.Point(0, HostToolbar.ActualHeight)

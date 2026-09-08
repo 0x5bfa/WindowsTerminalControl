@@ -30,7 +30,7 @@ namespace WindowsTerminalControl.WinUI;
 /// <summary>
 /// Hosts the native Windows Terminal renderer in a WinUI 3 control.
 /// </summary>
-public sealed class TerminalControl : UserControl, IDisposable
+public sealed partial class TerminalControl : UserControl, IDisposable
 {
     private const uint DefaultDpi = 96;
     private readonly bool _useComposition;

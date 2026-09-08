@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <Authors>0x5bfa</Authors>
+    <!--<Authors>0x5bfa</Authors>
     <Company>0x5bfa</Company>
     <Version>1.0.0</Version>
     <WindowsAppSDKVersion>2.4.0</WindowsAppSDKVersion>
@@ -15,7 +15,7 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Deterministic>true</Deterministic>
+    <Deterministic>true</Deterministic>-->
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsPackable)' == 'true'">

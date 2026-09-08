@@ -5,33 +5,13 @@
     Title="WindowsTerminalControl (WinUI 3)">
 
     <Grid Background="{StaticResource LayerFillColorDefaultBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
 
-        <Border
-            x:Name="HostToolbar"
-            Padding="12,8"
-            BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}"
-            BorderThickness="0,0,0,1">
-            <ComboBox
-                x:Name="HostModePicker"
-                Width="240"
-                MaxWidth="240"
-                HorizontalAlignment="Left"
-                SelectedIndex="0">
-                <ComboBoxItem Content="Composition" Tag="Composition" />
-                <ComboBoxItem Content="Child HWND" Tag="Hwnd" />
-            </ComboBox>
-        </Border>
-
-        <Border Grid.Row="1" Padding="24">
+        <Border Padding="24">
             <ContentControl
                 x:Name="TerminalHost"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                BorderBrush="{ThemeResource AccentFillColorDefaultBrush}"
                 BorderThickness="1"
                 CornerRadius="{StaticResource OverlayCornerRadius}" />
         </Border>

@@ -1,6 +1,4 @@
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.Graphics;
 using WindowsTerminalControl.Core;
 using WindowsTerminalControl.WinUI;
@@ -11,6 +9,7 @@ public sealed partial class MainWindow : Window
 {
     private readonly string _commandLine;
     private readonly string _workingDirectory;
+    private TerminalHostMode _hostMode;
     private TerminalControl? _terminalControl;
     private TerminalSessionConnection? _connection;
     private bool _hostLoaded;
@@ -27,9 +26,7 @@ public sealed partial class MainWindow : Window
         _commandLine = commandArguments.Count == 0 ? "C:\\WIndows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" : string.Join(' ', commandArguments);
         _workingDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
-        HostModePicker.SelectedIndex = useLegacyHost ? 1 : 0;
-        HostModePicker.SelectionChanged += OnHostModeChanged;
-        HostToolbar.SizeChanged += OnHostToolbarSizeChanged;
+        _hostMode = useLegacyHost ? TerminalHostMode.ChildWindow : TerminalHostMode.Composition;
         TerminalHost.Loaded += OnTerminalHostLoaded;
         Closed += OnClosed;
     }
@@ -38,20 +35,7 @@ public sealed partial class MainWindow : Window
     {
         TerminalHost.Loaded -= OnTerminalHostLoaded;
         _hostLoaded = true;
-        SwitchHost(GetSelectedHostMode());
-    }
-
-    private void OnHostModeChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (_hostLoaded && !_switchingHost)
-        {
-            SwitchHost(GetSelectedHostMode());
-        }
-    }
-
-    private TerminalHostMode GetSelectedHostMode()
-    {
-        return HostModePicker.SelectedIndex == 1 ? TerminalHostMode.ChildWindow : TerminalHostMode.Composition;
+        SwitchHost(_hostMode);
     }
 
     private void SwitchHost(TerminalHostMode mode)
@@ -69,56 +53,33 @@ public sealed partial class MainWindow : Window
 
             if (mode == TerminalHostMode.Composition)
             {
-                StartCompositionHost();
+                _terminalControl = new TerminalControl(TerminalHostMode.Composition)
+                {
+                    WindowOriginProvider = () => new Windows.Foundation.Point(0, 0)
+                };
+                _terminalControl.InitializationFailed += OnTerminalInitializationFailed;
+                _terminalControl.Initialized += OnTerminalInitialized;
+                _terminalControl.Connection = _connection;
+                TerminalHost.Content = _terminalControl;
+                DispatcherQueue.TryEnqueue(_terminalControl.UpdateHostBounds);
             }
             else
             {
-                StartChildWindowHost();
+                _terminalControl = new TerminalControl(TerminalHostMode.ChildWindow)
+                {
+                    WindowOriginProvider = () => new Windows.Foundation.Point(0, 0)
+                };
+                _terminalControl.InitializationFailed += OnTerminalInitializationFailed;
+                _terminalControl.Initialized += OnTerminalInitialized;
+                _terminalControl.Connection = _connection;
+                TerminalHost.Content = _terminalControl;
+                DispatcherQueue.TryEnqueue(_terminalControl.UpdateHostBounds);
             }
         }
         finally
         {
             _switchingHost = false;
         }
-    }
-
-    private void StartCompositionHost()
-    {
-        Title = "Windows Terminal control (WinUI 3)";
-        _terminalControl = new TerminalControl(TerminalHostMode.Composition)
-        {
-            WindowOriginProvider = () => new Windows.Foundation.Point(0, HostToolbar.ActualHeight)
-        };
-        _terminalControl.InitializationFailed += OnTerminalInitializationFailed;
-        _terminalControl.Initialized += OnTerminalInitialized;
-        _terminalControl.Connection = _connection;
-        TerminalHost.Content = _terminalControl;
-        DispatcherQueue.TryEnqueue(_terminalControl.UpdateHostBounds);
-        //StatusText.Text = "ContentExternalOutputLink — initializing";
-    }
-
-    private void StartChildWindowHost()
-    {
-        if (!Title.Contains("failed", StringComparison.OrdinalIgnoreCase))
-        {
-            Title = "Windows Terminal control — WinUI 3";
-        }
-
-        _terminalControl = new TerminalControl(TerminalHostMode.ChildWindow)
-        {
-            WindowOriginProvider = () => new Windows.Foundation.Point(0, HostToolbar.ActualHeight)
-        };
-        _terminalControl.InitializationFailed += OnTerminalInitializationFailed;
-        _terminalControl.Initialized += OnTerminalInitialized;
-        _terminalControl.Connection = _connection;
-        TerminalHost.Content = _terminalControl;
-        DispatcherQueue.TryEnqueue(_terminalControl.UpdateHostBounds);
-        //StatusText.Text = "Child HWND host — initializing";
-    }
-
-    private void OnHostToolbarSizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        _terminalControl?.UpdateHostBounds();
     }
 
     private void OnTerminalInitializationFailed(object? sender, Exception exception)
@@ -137,13 +98,13 @@ public sealed partial class MainWindow : Window
                 return;
             }
 
-            if (HostModePicker.SelectedIndex == 1)
+            if (_hostMode is TerminalHostMode.ChildWindow)
             {
                 SwitchHost(TerminalHostMode.ChildWindow);
                 return;
             }
 
-            HostModePicker.SelectedIndex = 1;
+            _hostMode = TerminalHostMode.ChildWindow;
         });
     }
 
@@ -153,8 +114,6 @@ public sealed partial class MainWindow : Window
         {
             return;
         }
-
-        //StatusText.Text = _terminalControl.IsCompositionActive ? "ContentExternalOutputLink — active" : "Child HWND host — active";
     }
 
     private void StopCurrentHost()
@@ -172,26 +131,8 @@ public sealed partial class MainWindow : Window
         _connection = null;
     }
 
-    private void OnCopyClicked(object sender, RoutedEventArgs e)
-    {
-        _terminalControl?.CopySelection();
-    }
-
-    private async void OnPasteClicked(object sender, RoutedEventArgs e)
-    {
-        var content = Clipboard.GetContent();
-        if (!content.Contains(StandardDataFormats.Text) || _connection is null)
-        {
-            return;
-        }
-
-        var text = await content.GetTextAsync();
-        _connection.WriteInput(text.Replace("\r\n", "\r").Replace("\n", "\r"));
-    }
-
     private void OnClosed(object sender, WindowEventArgs args)
     {
         StopCurrentHost();
     }
-
 }

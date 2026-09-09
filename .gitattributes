@@ -1,6 +1,9 @@
-* text=auto eol=crlf
+# Auto detect text files and perform LF normalization
+*          text=auto
 
-*.dll binary
-*.exe binary
-*.ico binary
-*.png binary
+*.cs       text diff=csharp
+*.cshtml   text diff=html
+*.csx      text diff=csharp
+*.sln      text eol=crlf
+*.slnx     text eol=crlf
+*.csproj   text eol=crlf

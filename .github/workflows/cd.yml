@@ -8,20 +8,22 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 env:
-  WORKING_DIR:           '${{ github.workspace }}'
-  CORE_LIB_PROJ_PATH:    '${{ github.workspace }}\src\WindowsTerminalControl.Core\WindowsTerminalControl.Core.csproj'
+  WORKING_DIR:            '${{ github.workspace }}'
+  CORE_LIB_PROJ_PATH:     '${{ github.workspace }}\src\WindowsTerminalControl.Core\WindowsTerminalControl.Core.csproj'
   WINFORMS_LIB_PROJ_PATH: '${{ github.workspace }}\src\WindowsTerminalControl.WinForms\WindowsTerminalControl.WinForms.csproj'
-  WPF_LIB_PROJ_PATH:     '${{ github.workspace }}\src\WindowsTerminalControl.Wpf\WindowsTerminalControl.Wpf.csproj'
-  WINUI_LIB_PROJ_PATH:   '${{ github.workspace }}\src\WindowsTerminalControl.WinUI\WindowsTerminalControl.WinUI.csproj'
-  OUTPUT_DIR:            '${{ github.workspace }}\artifacts\packages'
+  WPF_LIB_PROJ_PATH:      '${{ github.workspace }}\src\WindowsTerminalControl.Wpf\WindowsTerminalControl.Wpf.csproj'
+  WINUI_LIB_PROJ_PATH:    '${{ github.workspace }}\src\WindowsTerminalControl.WinUI\WindowsTerminalControl.WinUI.csproj'
+  OUTPUT_DIR:             '${{ github.workspace }}\artifacts\packages'
 
 jobs:
   build-pack-publish:
     runs-on: windows-2025-vs2026
-    environment: release
+    environment: nuget.org
+    permissions:
+      contents: read
+      id-token: write
     env:
       CONFIGURATION: Release
       PLATFORM: x64
@@ -39,33 +41,26 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Pack Core
-        run: msbuild /restore $env:CORE_LIB_PROJ_PATH /t:Pack /p:Configuration=$env:CONFIGURATION /p:Platform=$env:PLATFORM /p:ContinuousIntegrationBuild=true /p:PackageOutputPath=$env:OUTPUT_DIR
+        run: msbuild /restore $env:CORE_LIB_PROJ_PATH /t:Pack /p:Configuration=Release /p:Platform=x64 /p:PackageOutputPath=$env:OUTPUT_DIR
 
       - name: Pack WinForms
-        run: msbuild /restore $env:WINFORMS_LIB_PROJ_PATH /t:Pack /p:Configuration=$env:CONFIGURATION /p:Platform=$env:PLATFORM /p:ContinuousIntegrationBuild=true /p:PackageOutputPath=$env:OUTPUT_DIR
+        run: msbuild /restore $env:WINFORMS_LIB_PROJ_PATH /t:Pack /p:Configuration=Release /p:Platform=x64 /p:PackageOutputPath=$env:OUTPUT_DIR
 
       - name: Pack WPF
-        run: msbuild /restore $env:WPF_LIB_PROJ_PATH /t:Pack /p:Configuration=$env:CONFIGURATION /p:Platform=$env:PLATFORM /p:ContinuousIntegrationBuild=true /p:PackageOutputPath=$env:OUTPUT_DIR
+        run: msbuild /restore $env:WPF_LIB_PROJ_PATH /t:Pack /p:Configuration=Release /p:Platform=x64 /p:PackageOutputPath=$env:OUTPUT_DIR
 
       - name: Pack WinUI
-        run: msbuild /restore $env:WINUI_LIB_PROJ_PATH /t:Pack /p:Configuration=$env:CONFIGURATION /p:Platform=$env:PLATFORM /p:ContinuousIntegrationBuild=true /p:PackageOutputPath=$env:OUTPUT_DIR
-
-      - name: Upload nupkg artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: NuPkg artifacts
-          path: |
-            ${{ env.OUTPUT_DIR }}\*.nupkg
-            ${{ env.OUTPUT_DIR }}\*.snupkg
-          if-no-files-found: error
+        run: msbuild /restore $env:WINUI_LIB_PROJ_PATH /t:Pack /p:Configuration=Release /p:Platform=x64 /p:PackageOutputPath=$env:OUTPUT_DIR
 
       - name: Login to NuGet.org with trusted publishing
         id: nuget-login
         uses: NuGet/login@v1
         with:
-          user: ${{ vars.NUGET_USER || '0x5bfa' }}
+          user: ${{ secrets.NUGET_USER }}
 
       - name: Publish to NuGet.org
         run: |
-          dotnet nuget push ${{ env.OUTPUT_DIR }}\*.nupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
-          dotnet nuget push ${{ env.OUTPUT_DIR }}\*.snupkg --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+          dotnet nuget push "$env:OUTPUT_DIR\*.nupkg" --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+          dotnet nuget push "$env:OUTPUT_DIR\*.snupkg" --api-key $env:NUGET_API_KEY --source https://api.nuget.org/v3/index.json --skip-duplicate
+        env:
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
